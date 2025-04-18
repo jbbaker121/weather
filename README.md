@@ -1,38 +1,33 @@
-# Weather
-Generating the real-time weather of any location
-
 import requests
 
-def get_weather(city_name, api_key):
-    # Base URL of OpenWeatherMap API
-    base_url = "http://api.openweathermap.org/data/2.5/weather"
+API_KEY = '3311c1c85ee040b5b32174905251804'
+BASE_URL = 'http://api.weatherapi.com/v1/current.json'
 
-    # Parameters for the request
-    params = {
-        "q": city_name,
-        "appid": api_key,
-        "units": "metric"  # use "imperial" for Fahrenheit
-    }
+# Ask the user for a location
+location = input("Enter a city or location: ")
 
-    # Send GET request
-    
-    response = requests.get(base_url, params=params)
-    
-    # Convert to JSON
-    
+# Build the request URL
+url = f"{BASE_URL}?key={API_KEY}&q={location}"
+
+# Make the request
+response = requests.get(url)
+
+# Parse the JSON response
+if response.status_code == 200:
     data = response.json()
+    location_name = data['location']['name']
+    region = data['location']['region']
+    country = data['location']['country']
+    temp_c = data['current']['temp_c']
+    condition = data['current']['condition']['text']
+    humidity = data['current']['humidity']
+    wind_kph = data['current']['wind_kph']
 
-    if response.status_code == 200:
-        # Extract data
-        
-        temp = data["main"]["temp"]
-        weather = data["weather"][0]["description"]
-        print(f"\nWeather in {city_name}:\nTemperature: {temp}°C\nCondition: {weather}")
-    else:
-        print("\nCity not found or error occurred.")
+    print(f"Weather for {location_name}, {region}, {country}:")
+    print(f"Temperature: {temp_c}°C")
+    print(f"Condition: {condition}")
+    print(f"Humidity: {humidity}%")
+    print(f"Wind Speed: {wind_kph} kph")
 
-# === Run the app ===
-if __name__ == "__main__":
-    api_key = "YOUR_API_KEY_HERE"  # Replace with your OpenWeatherMap API key
-    city = input("Enter a city name: ")
-    get_weather(city, api_key)
+else:
+    print("Error fetching weather data. Please check the city name or try again later.")
