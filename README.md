@@ -15,13 +15,16 @@ def get_weather(city_name, api_key):
     }
 
     # Send GET request
+    
     response = requests.get(base_url, params=params)
     
     # Convert to JSON
+    
     data = response.json()
 
     if response.status_code == 200:
         # Extract data
+        
         temp = data["main"]["temp"]
         weather = data["weather"][0]["description"]
         print(f"\nWeather in {city_name}:\nTemperature: {temp}°C\nCondition: {weather}")
