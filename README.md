@@ -1,34 +1,45 @@
-# Importing Weather
 import requests
+import tkinter as tk
+from tkinter import messagebox
+# Create the main window
+root = tk.Tk()
+root.title("Weather App")
 
-API_KEY = '3311c1c85ee040b5b32174905251804'
-BASE_URL = 'http://api.weatherapi.com/v1/current.json'
+# Create and configure labels and entry fields
+city_label = tk.Label(root, text="City:")
+city_label.pack()
+city_entry = tk.Entry(root)
+city_entry.pack()
 
-# Ask the user for a location
-location = input("Enter a city or location: ")
+# Create a button to fetch weather data
+fetch_button = tk.Button(root, text="Fetch Weather")
+fetch_button.pack()
 
-# Build the request URL
-url = f"{BASE_URL}?key={API_KEY}&q={location}"
+# Create a label to display weather information
+weather_label = tk.Label(root, text="")
+weather_label.pack()
 
-# Make the request
-response = requests.get(url)
+# Define the function to fetch weather data
+def fetch_weather():
+    city = city_entry.get()
+    # Add your API key here
+    api_key = "3311c1c85ee040b5b32174905251804"
+    url = f"http://api.weatherapi.com/v1/current.json?key={api_key}&q={city}"
 
-# Parse the JSON response
-if response.status_code == 200:
-    data = response.json()
-    location_name = data['location']['name']
-    region = data['location']['region']
-    country = data['location']['country']
-    temp_c = data['current']['temp_c']
-    condition = data['current']['condition']['text']
-    humidity = data['current']['humidity']
-    wind_kph = data['current']['wind_kph']
+    
+    try:
+        response = requests.get(url)
+        data = response.json()
 
-    print(f"Weather for {location_name}, {region}, {country}:")
-    print(f"Temperature: {temp_c}°C")
-    print(f"Condition: {condition}")
-    print(f"Humidity: {humidity}%")
-    print(f"Wind Speed: {wind_kph} kph")
+        # Weather Searching Structure for WeatherAPI
+        temperature = data["current"]["temp_c"]
+        weather = data["current"]["condition"]["text"]
 
-else:
-    print("Error fetching weather data. Please check the city name or try again later.")
+        weather_label.config(text=f"Temperature: {temperature}°C\nWeather: {weather}")
+    except Exception as e:
+        messagebox.showerror("Error", "Unable to fetch weather data")
+
+fetch_button.config(command=fetch_weather)
+
+# Start the GUI main loop
+root.mainloop()
