@@ -5,7 +5,7 @@ from tkinter import messagebox
 root = tk.Tk()
 root.title("Weather App")
 
-# Create and configure labels and entry fields
+# Create the entry field for input
 city_label = tk.Label(root, text="City:")
 city_label.pack()
 city_entry = tk.Entry(root)
